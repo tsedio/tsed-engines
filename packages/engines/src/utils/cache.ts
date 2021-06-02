@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs-extra";
 import {dirname, extname, isAbsolute, join} from "path";
 import {promisify} from "./promisify";
 import {Engine, EngineCallback} from "../interfaces";
@@ -65,29 +65,25 @@ export function cache(options: any, compiled?: any) {
  * @param {String} options
  * @param {Function} cb
  */
-export function read(path: string, options: any, cb: EngineCallback) {
-  const str = readCache.get(path);
-  const cached = options.cache && str && typeof str === "string";
+export async function read(path: string, options: any): Promise<string> {
+  let str = readCache.get(path);
 
   // cached (only if cached is a string and not a compiled template function)
-  if (cached) {
-    return cb(null, str);
+  if (options.cache && str && typeof str === "string") {
+    return str;
   }
 
   // read
-  fs.readFile(path, "utf8", (err, str) => {
-    if (err) {
-      return cb(err);
-    }
-    // remove extraneous utf8 BOM marker
-    str = str.replace(/^\uFEFF/, "");
+  str = await fs.readFile(path, "utf8");
 
-    if (options.cache) {
-      readCache.set(path, str);
-    }
+  // remove extraneous utf8 BOM marker
+  str = str.replace(/^\uFEFF/, "");
 
-    cb(null, str);
-  });
+  if (options.cache) {
+    readCache.set(path, str);
+  }
+
+  return str;
 }
 
 /**
@@ -97,75 +93,78 @@ export function read(path: string, options: any, cb: EngineCallback) {
  *
  * @param path
  * @param {String} options
- * @param cb
  * @api private
  */
-export function readPartials(path: string, options: any, cb: (err?: unknown, str?: string | any) => void) {
+export async function readPartials(path: string, options: any): Promise<Record<string, string> | void> {
   if (!options.partials) {
-    return cb();
+    return;
   }
 
   const keys = Object.keys(options.partials);
   const partials: Record<string, string> = {};
 
-  function next(index: number): void {
-    if (index === keys.length) {
-      return cb(null, partials);
-    }
-
-    const key = keys[index];
-    const partialPath = options.partials[key];
-
-    if (partialPath === undefined || partialPath === null || partialPath === false) {
-      return next(++index);
-    }
-
-    let file;
-    if (isAbsolute(partialPath)) {
-      if (extname(partialPath) !== "") {
-        file = partialPath;
-      } else {
-        file = join(partialPath + extname(path));
+  return new Promise((resolve, reject) => {
+    async function next(index: number): Promise<any> {
+      if (index === keys.length) {
+        return resolve(partials);
       }
-    } else {
-      file = join(dirname(path), partialPath + extname(path));
+
+      const key = keys[index];
+      const partialPath = options.partials[key];
+
+      if (partialPath === undefined || partialPath === null || partialPath === false) {
+        return next(++index);
+      }
+
+      let file;
+      if (isAbsolute(partialPath)) {
+        if (extname(partialPath) !== "") {
+          file = partialPath;
+        } else {
+          file = join(partialPath + extname(path));
+        }
+      } else {
+        file = join(dirname(path), partialPath + extname(path));
+      }
+
+      try {
+        partials[key] = await read(file, options);
+        next(++index);
+      } catch (err) {
+        reject(err);
+      }
     }
 
-    read(file, options, function (err, str) {
-      if (err) return cb(err);
-      partials[key] = str;
-      next(++index);
-    });
-  }
+    next(0);
+  });
+}
 
-  next(0);
+function getExtend() {
+  return requires.extend || (requires.extend = require("util")._extend);
 }
 
 export function fromStringRenderer(name: string) {
   return (path: string, options: any, cb: EngineCallback) => {
     options.filename = path;
 
-    return promisify(cb, (cb: (err?: unknown, str?: string | any) => void) => {
-      readPartials(path, options, function (err, partials) {
-        const extend = requires.extend || (requires.extend = require("util")._extend);
+    return promisify(cb, async (cb: EngineCallback) => {
+      try {
+        const partials = await readPartials(path, options);
+
+        const extend = getExtend();
         const opts = extend({}, options);
         opts.partials = partials;
-
-        if (err) {
-          return cb(err);
-        }
 
         if (cache(opts)) {
           engines.get(name)!.render("", opts, cb);
         } else {
-          read(path, opts, function (err, str) {
-            if (err) {
-              return cb(err);
-            }
-            engines.get(name)!.render(str, opts, cb);
-          });
+          const str = await read(path, opts);
+
+          engines.get(name)!.render(str, opts, cb);
         }
-      });
+      } catch (err) {
+        cb(err);
+      }
     });
   };
 }

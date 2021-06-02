@@ -1,6 +1,6 @@
+import {requireEngine} from "../utils/cache";
 import {promisify} from "../utils/promisify";
 import {registerEngine} from "../utils/registerEngine";
-import {requireEngine} from "@tsed/engines";
 
 export default registerEngine("plates", (str, options, cb) => {
   return promisify(cb, function (cb) {
