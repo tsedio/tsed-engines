@@ -8,11 +8,19 @@ const Sqrl = require("squirrelly");
 
 const rootDir = join(__dirname, "..");
 
+const readFile = fs.readFile;
+const readFileSync = fs.readFileSync;
+
 export function test(name: string) {
   const engine = engines.get(name)!;
 
   describe(name, () => {
     let user: any;
+
+    afterEach(function() {
+      fs.readFile = readFile;
+      fs.readFileSync = readFileSync;
+    });
 
     if (name === "handlebars") {
       user = {name: "<strong>Tobi</strong>"};

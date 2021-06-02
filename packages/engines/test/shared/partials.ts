@@ -5,11 +5,19 @@ import {expect} from "chai";
 
 const rootDir = join(__dirname, "..");
 
+const readFile = fs.readFile;
+const readFileSync = fs.readFileSync;
+
 export function test(name: string) {
   const user = {name: "Tobi"};
   const engine = engines.get(name)!;
 
   describe(name, () => {
+    afterEach(function() {
+      fs.readFile = readFile;
+      fs.readFileSync = readFileSync;
+    });
+
     if (name === "dust") {
       it("should support rendering a partial", (done) => {
         const str = fs.readFileSync(`${rootDir}/fixtures/${name}/user_partial.${name}`).toString();

@@ -7,14 +7,17 @@ import {join} from "path";
 const rootDir = join(__dirname, '..')
 const sandbox = sinon.createSandbox();
 
+const readFile = fs.readFile;
+const readFileSync = fs.readFileSync;
+
 export function test(name: string) {
   const engine = engines.get(name)!;
   const user = {name: "Tobi"};
 
   describe(name, () => {
     beforeEach(() => {
-      sandbox.stub(fs, "readFile");
-      sandbox.stub(fs, "readFileSync");
+      fs.readFile = readFile;
+      fs.readFileSync = readFileSync;
     });
     afterEach(() => {
       sandbox.restore();
@@ -69,7 +72,7 @@ export function test(name: string) {
       const path = `${rootDir}/fixtures/${name}/user.${name}`;
       const locals = {
         user: user,
-        base: "test/fixtures/" + name + "/base.html",
+        base: `${rootDir}/fixtures/${name}/base.html`,
         title: "My Title"
       };
 

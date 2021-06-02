@@ -74,5 +74,5 @@ describe("integration", () => {
   sharedHelpersTest.test("squirrelly");
   sharedTest.test("twing");
 
-  // require("./shared/react").test("react");
+  require("./shared/react").test("react");
 });

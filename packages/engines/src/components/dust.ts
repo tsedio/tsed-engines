@@ -30,14 +30,18 @@ export default registerEngine("dust", (str, options, cb) => {
     }
     if (!options || (options && !options.cache)) engine.cache = {};
 
-    engine.onLoad = (path: string, callback: any) => {
+    engine.onLoad = async (path: string, callback: any) => {
       if (extname(path) === "") {
-        path += "." + ext;
+        path += `.${ext}`;
       }
       if (path[0] !== "/") {
-        path = views + "/" + path;
+        path = `${views}/${path}`;
       }
-      read(path, options, callback);
+      try {
+        callback(null, await read(path, options));
+      } catch (er) {
+        callback(er);
+      }
     };
 
     try {

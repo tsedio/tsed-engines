@@ -4,10 +4,28 @@ import {cache, getFromCache, requireEngine, setToCache} from "../utils/cache";
 import {promisify} from "../utils/promisify";
 import {readFileSync} from "fs";
 
-export function requireReact(module: any, filename: string) {
-  const babel = requireEngine("babel-core", "babel");
-  const compiled = babel.transformFileSync(filename, {presets: ["react"]}).code;
+function transformFileSync(filename: string) {
+  try {
+    const babel = requireEngine("@babel/core", "babel");
+    return babel.transformFileSync(filename, {presets: ["@babel/preset-react"]}).code;
+  } catch (err) {
+    const babel = requireEngine("babel-core", "babel");
+    return babel.transformFileSync(filename, {presets: ["react"]}).code;
+  }
+}
 
+function transform(src: string) {
+  try {
+    const babel = requireEngine("@babel/core", "babel");
+    return babel.transform(src, {presets: ["@babel/preset-react"]}).code;
+  } catch (err) {
+    const babel = requireEngine("babel-core", "babel");
+    return babel.transform(src, {presets: ["react"]}).code;
+  }
+}
+
+export function requireReact(module: any, filename: string) {
+  const compiled = transformFileSync(filename);
   return module._compile(compiled, filename);
 }
 
@@ -15,15 +33,13 @@ export function requireReact(module: any, filename: string) {
  *  Converting a string into a node module.
  */
 function requireReactString(src: string, filename?: string) {
-  const babel = requireEngine("babel-core", "babel");
-
   if (!filename) filename = "";
   // @ts-ignore
   const m = new module.constructor();
   filename = filename || "";
 
   // Compile Using React
-  const compiled = babel.transform(src, {presets: ["react"]}).code;
+  const compiled = transform(src);
 
   // Compile as a module
   m.paths = module.paths;
