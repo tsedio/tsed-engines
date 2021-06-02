@@ -13,13 +13,17 @@ const from = () => (path: string, options: any, cb: any) => {
  * Toffee string support.
  */
 
-export default registerEngine("toffee", (str, options, cb) => {
-  return promisify(cb,  (cb) => {
-    const engine = requireEngine("toffee");
-    try {
-      engine.str_render(str, options, cb);
-    } catch (err) {
-      cb(err);
-    }
-  });
-}, from);
+export default registerEngine(
+  "toffee",
+  (str, options, cb) => {
+    return promisify(cb, (cb) => {
+      const engine = requireEngine("toffee");
+      try {
+        engine.str_render(str, options, cb);
+      } catch (err) {
+        cb(err);
+      }
+    });
+  },
+  from
+);

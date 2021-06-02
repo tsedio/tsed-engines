@@ -10,14 +10,18 @@ const from = () => (path: string, options: any, cb: EngineCallback) => {
   });
 };
 
-export default registerEngine("whiskers", (str, options, cb) => {
-  return promisify(cb, (cb) => {
-    const engine = requireEngine("whiskers");
+export default registerEngine(
+  "whiskers",
+  (str, options, cb) => {
+    return promisify(cb, (cb) => {
+      const engine = requireEngine("whiskers");
 
-    try {
-      cb(null, engine.render(str, options));
-    } catch (err) {
-      cb(err);
-    }
-  });
-}, from);
+      try {
+        cb(null, engine.render(str, options));
+      } catch (err) {
+        cb(err);
+      }
+    });
+  },
+  from
+);

@@ -9,7 +9,7 @@ export default registerEngine("ractive", (str, options, cb) => {
     options.template = template;
 
     if (options.data === null || options.data === undefined) {
-      const extend = (requires.extend || (requires.extend = require("util")._extend));
+      const extend = requires.extend || (requires.extend = require("util")._extend);
 
       // Shallow clone the options object
       options.data = extend({}, options);

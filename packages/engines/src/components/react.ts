@@ -2,7 +2,7 @@ import {resolve} from "path";
 import {registerEngine} from "../utils/registerEngine";
 import {cache, getFromCache, requireEngine, setToCache} from "../utils/cache";
 import {promisify} from "../utils/promisify";
-import { readFileSync } from "fs";
+import {readFileSync} from "fs";
 
 export function requireReact(module: any, filename: string) {
   const babel = requireEngine("babel-core", "babel");
@@ -54,13 +54,11 @@ function reactBaseTmpl(data: any, options: any) {
   return data;
 }
 
-
 /**
  *  The main render parser for React based templates
  */
 function reactRenderer(type: any) {
   if (require.extensions) {
-
     // Ensure JSX is transformed on require
     if (!require.extensions[".jsx"]) {
       require.extensions[".jsx"] = requireReact;
@@ -71,15 +69,14 @@ function reactRenderer(type: any) {
     if (!require.extensions[".react"]) {
       require.extensions[".react"] = requireReact;
     }
-
   }
 
   // Return rendering fx
   return (str: string, options: any, cb: any) => {
     return promisify(cb, (cb) => {
       // React Import
-      const ReactDOM = requireEngine("react-dom/server","ReactDOM");
-      const react = requireEngine('react');
+      const ReactDOM = requireEngine("react-dom/server", "ReactDOM");
+      const react = requireEngine("react");
 
       // Assign HTML Base
       const base = options.base;
@@ -103,20 +100,19 @@ function reactRenderer(type: any) {
         if (!cache(options)) {
           // Parsing
           if (type === "path") {
-            var path = resolve(str);
+            let path = resolve(str);
             delete require.cache[path];
             Code = require(path);
           } else {
             Code = requireReactString(str);
           }
           Factory = cache(options, react.createFactory(Code));
-
         } else {
           Factory = cache(options);
         }
 
         parsed = new Factory(options);
-        content = (isNonStatic) ? ReactDOM.renderToString(parsed) : ReactDOM.renderToStaticMarkup(parsed);
+        content = isNonStatic ? ReactDOM.renderToString(parsed) : ReactDOM.renderToStaticMarkup(parsed);
 
         if (base) {
           baseStr = getFromCache(str) || readFileSync(resolve(base), "utf8");
@@ -130,7 +126,6 @@ function reactRenderer(type: any) {
         }
 
         cb(null, content);
-
       } catch (err) {
         cb(err);
       }

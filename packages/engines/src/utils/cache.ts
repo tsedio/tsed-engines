@@ -147,7 +147,7 @@ export function fromStringRenderer(name: string) {
 
     return promisify(cb, (cb: (err?: unknown, str?: string | any) => void) => {
       readPartials(path, options, function (err, partials) {
-        const extend = (requires.extend || (requires.extend = require("util")._extend));
+        const extend = requires.extend || (requires.extend = require("util")._extend);
         const opts = extend({}, options);
         opts.partials = partials;
 

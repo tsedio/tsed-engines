@@ -13,26 +13,30 @@ const from = () => (path: string, options: any, cb: any) => {
     }
 
     if (!options.cache) {
-      var callback = cb;
-      cb = function () {
+      let callback = cb;
+      cb = function (...args: any[]) {
         delete require.cache[path];
-        callback.apply(this, arguments);
+        callback.apply(this, args);
       };
     }
     engine.renderFile(path, options, cb);
   });
 };
 
-export default registerEngine("teacup", (str, options, cb) => {
-  const coffee = require("coffee-script");
-  const vm = require("vm");
-  const sandbox = {
-    module: {exports: {}},
-    require: require
-  };
-  return promisify(cb, (cb) => {
-    vm.runInNewContext(coffee.compile(str), sandbox);
-    const tmpl = sandbox.module.exports as any;
-    cb(null, tmpl(options));
-  });
-}, from);
+export default registerEngine(
+  "teacup",
+  (str, options, cb) => {
+    const coffee = require("coffee-script");
+    const vm = require("vm");
+    const sandbox = {
+      module: {exports: {}},
+      require: require
+    };
+    return promisify(cb, (cb) => {
+      vm.runInNewContext(coffee.compile(str), sandbox);
+      const tmpl = sandbox.module.exports as any;
+      cb(null, tmpl(options));
+    });
+  },
+  from
+);

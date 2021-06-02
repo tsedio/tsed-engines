@@ -73,7 +73,7 @@ function renderTinyliquid(engine: any, str: string, options: any, cb: EngineCall
   };
 
   if (options.customTags) {
-    var tagFunctions = options.customTags;
+    let tagFunctions = options.customTags;
 
     for (k in options.customTags) {
       /*Tell jshint there's no problem with having this function in the loop */
@@ -117,7 +117,6 @@ export default registerEngine("liquid", (str, options, cb) => {
 
       return;
     } catch (err) {
-
       // set up liquid-node engine
       try {
         Liquid = requires.liquid = require("liquid-node");
@@ -181,7 +180,7 @@ export default registerEngine("liquid", (str, options, cb) => {
       /**
        * Finally, execute the template:
        */
-      const result = await engine.parseAndRender(str, locals)
+      const result = await engine.parseAndRender(str, locals);
 
       cb(null, result);
     } catch (err) {
@@ -189,4 +188,3 @@ export default registerEngine("liquid", (str, options, cb) => {
     }
   });
 });
-

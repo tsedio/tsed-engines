@@ -14,6 +14,7 @@ export default registerEngine("nunjucks", (str, options, cb) => {
       if (options.settings && options.settings.views) {
         env = engine.configure(options.settings.views);
       } else if (options.nunjucks && options.nunjucks.configure) {
+        // eslint-disable-next-line prefer-spread
         env = engine.configure.apply(engine, options.nunjucks.configure);
       }
 
@@ -31,19 +32,12 @@ export default registerEngine("nunjucks", (str, options, cb) => {
       if (options.loader) {
         env = new engine.Environment(options.loader);
       } else if (options.settings && options.settings.views) {
-        env = new engine.Environment(
-          new engine.FileSystemLoader(options.settings.views)
-        );
+        env = new engine.Environment(new engine.FileSystemLoader(options.settings.views));
       } else if (options.nunjucks && options.nunjucks.loader) {
         if (typeof options.nunjucks.loader === "string") {
           env = new engine.Environment(new engine.FileSystemLoader(options.nunjucks.loader));
         } else {
-          env = new engine.Environment(
-            new engine.FileSystemLoader(
-              options.nunjucks.loader[0],
-              options.nunjucks.loader[1]
-            )
-          );
+          env = new engine.Environment(new engine.FileSystemLoader(options.nunjucks.loader[0], options.nunjucks.loader[1]));
         }
       }
 

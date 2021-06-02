@@ -5,7 +5,7 @@ import {registerEngine} from "../utils/registerEngine";
 export default registerEngine("dot", (str, options, cb) => {
   return promisify(cb, function (cb) {
     const engine = requireEngine("dot");
-    const extend = (requires.extend || (requires.extend = require("util")._extend));
+    const extend = requires.extend || (requires.extend = require("util")._extend);
 
     try {
       let settings = {};

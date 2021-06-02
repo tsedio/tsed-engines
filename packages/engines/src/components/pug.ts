@@ -32,16 +32,19 @@ const from = () => (path: string, options: any, cb: EngineCallback) => {
   });
 };
 
-export default registerEngine("pug", (str, options, cb) => {
-  return promisify(cb, function (cb) {
-    let engine = getEngine();
+export default registerEngine(
+  "pug",
+  (str, options, cb) => {
+    return promisify(cb, function (cb) {
+      let engine = getEngine();
 
-
-    try {
-      const tmpl = cache(options) || cache(options, engine.compile(str, options));
-      cb(null, tmpl(options));
-    } catch (err) {
-      cb(err);
-    }
-  });
-}, from);
+      try {
+        const tmpl = cache(options) || cache(options, engine.compile(str, options));
+        cb(null, tmpl(options));
+      } catch (err) {
+        cb(err);
+      }
+    });
+  },
+  from
+);

@@ -5,9 +5,9 @@ export interface RenderCallback {
 }
 
 export interface EngineOptions {
-  cache?: boolean,
+  cache?: boolean;
 
-  [otherOptions: string]: any
+  [otherOptions: string]: any;
 }
 
 export interface Engine {

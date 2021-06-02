@@ -15,10 +15,14 @@ const from = () => (path: string, options: any, cb: EngineCallback) => {
   });
 };
 
-export default registerEngine("just", (str, options, cb) => {
-  return promisify(cb, (cb) => {
-    const JUST = require("just");
-    const engine = new JUST({root: {page: str}});
-    engine.render("page", options, cb);
-  });
-}, from);
+export default registerEngine(
+  "just",
+  (str, options, cb) => {
+    return promisify(cb, (cb) => {
+      const JUST = require("just");
+      const engine = new JUST({root: {page: str}});
+      engine.render("page", options, cb);
+    });
+  },
+  from
+);

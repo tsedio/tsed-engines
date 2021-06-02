@@ -15,10 +15,14 @@ const from = () => (path: string, options: any, cb: EngineCallback) => {
   });
 };
 
-export default registerEngine("ect", (str, options, cb) => {
-  return promisify(cb, (cb) => {
-    const ECT = require("ect");
-    const engine = new ECT({root: {page: str}});
-    engine.render("page", options, cb);
-  });
-}, from);
+export default registerEngine(
+  "ect",
+  (str, options, cb) => {
+    return promisify(cb, (cb) => {
+      const ECT = require("ect");
+      const engine = new ECT({root: {page: str}});
+      engine.render("page", options, cb);
+    });
+  },
+  from
+);

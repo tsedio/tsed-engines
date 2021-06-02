@@ -86,9 +86,10 @@ All templates supported by this library may be rendered using the signature `(pa
 
 > __NOTE__: All this example code uses cons.swig for the swig template engine. Replace swig with whatever templating you are using. For example, use cons.hogan for hogan.js, cons.jade for jade, etc. `console.log(cons)` for the full list of identifiers.
 
-```js
-var cons = require('consolidate');
-cons.swig('views/page.html', { user: 'tobi' }, function(err, html){
+```typescript
+import {swig} from '@tsed/engines';
+
+swig('views/page.html', { user: 'tobi' }, (err, html) => {
   if (err) throw err;
   console.log(html);
 });
@@ -96,9 +97,10 @@ cons.swig('views/page.html', { user: 'tobi' }, function(err, html){
 
 Or without options / local variables:
 
-```js
-var cons = require('consolidate');
-cons.swig('views/page.html', function(err, html){
+```typescript
+import {swig} from '@tsed/engines';
+
+swig('views/page.html', (err, html) => {
   if (err) throw err;
   console.log(html);
 });
@@ -106,11 +108,12 @@ cons.swig('views/page.html', function(err, html){
 
 To dynamically pass the engine, simply use the subscript operator and a variable:
 
-```js
-var cons = require('consolidate')
-  , name = 'swig';
+```typescript
+import {engines} from '@tsed/engines';
 
-cons[name]('views/page.html', { user: 'tobi' }, function(err, html){
+const engine = engines.get('swig');
+
+engine('views/page.html', { user: 'tobi' }, (err, html) => {
   if (err) throw err;
   console.log(html);
 });
@@ -120,14 +123,14 @@ cons[name]('views/page.html', { user: 'tobi' }, function(err, html){
 
 Additionally, all templates optionally return a promise if no callback function is provided. The promise represents the eventual result of the template function which will either resolve to a string, compiled from the template, or be rejected. Promises expose a `then` method which registers callbacks to receive the promise’s eventual value and a `catch` method which the reason why the promise could not be fulfilled. Promises allow more synchronous-like code structure and solve issues like race conditions.
 
-```js
-var cons = require('consolidate');
+```typescript
+import {swig} from '@tsed/engines';
 
-cons.swig('views/page.html', { user: 'tobi' })
-  .then(function (html) {
+swig('views/page.html', { user: 'tobi' })
+  .then((html) => {
     console.log(html);
   })
-  .catch(function (err) {
+  .catch((err) => {
     throw err;
   });
 ```
@@ -140,13 +143,12 @@ Using supported Express versions: `app.locals.cache = true` or set NODE_ENV to '
 
 ## Express example
 
-```js
-var express = require('express')
-  , cons = require('consolidate')
-  , app = express();
+```typescript
+import express from 'express';
+import {swig} from 'consolidate';
 
 // assign the swig engine to .html files
-app.engine('html', cons.swig);
+app.engine('html', swig);
 
 // set .html as the default extension
 app.set('view engine', 'html');
@@ -159,7 +161,7 @@ users.push({ name: 'jane' });
 
 app.get('/', function(req, res){
   res.render('index', {
-    title: 'Consolidate.js'
+    title: 'Ts.ED Engines'
   });
 });
 
@@ -178,22 +180,22 @@ console.log('Express server listening on port 3000');
 
 Template engines are exposed via the `cons.requires` object, but they are not instantiated until you've called the `cons[engine].render()` method. You can instantiate them manually beforehand if you want to add filters, globals, mixins, or other engine features.
 
-```js
-var cons = require('consolidate'),
-  nunjucks = require('nunjucks');
+```typescript
+import {requires} from 'consolidate';
+import nunjucks from 'nunjucks';
 
 // add nunjucks to requires so filters can be
 // added and the same instance will be used inside the render method
-cons.requires.nunjucks = nunjucks.configure();
+requires.nunjucks = nunjucks.configure();
 
-cons.requires.nunjucks.addFilter('foo', function () {
+requires.nunjucks.addFilter('foo', () => {
   return 'bar';
 });
 ```
 
 ## Notes
 
-* If you're using Nunjucks, please take a look at the `exports.nunjucks.render` function in `lib.consolidate.js`.  You can pass your own engine/environment via `options.nunjucksEnv`, or if you want to support Express you can pass `options.settings.views`, or if you have another use case, pass `options.nunjucks` (see the code for more insight).
+* If you're using Nunjucks, please take a look at the `exports.nunjucks.render` function in `lib/index.js`. You can pass your own engine/environment via `options.nunjucksEnv`, or if you want to support Express you can pass `options.settings.views`, or if you have another use case, pass `options.nunjucks` (see the code for more insight).
 * You can pass **partials** with `options.partials`
 * For using **template inheritance** with nunjucks, you can pass a loader
   with `options.loader`.
@@ -203,17 +205,16 @@ cons.requires.nunjucks.addFilter('foo', function () {
 * `React` To render content into a html base template (eg. `index.html` of your React app), pass the path of the template with `options.base`.
 
 ## Contributors
+
 Please read [contributing guidelines here](https://tsed.io/CONTRIBUTING.html)
 
 <a href="https://github.com/tsedio/ts-express-decorators/graphs/contributors"><img src="https://opencollective.com/tsed/contributors.svg?width=890" /></a>
-
 
 ## Backers
 
 Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/tsed#backer)]
 
 <a href="https://opencollective.com/tsed#backers" target="_blank"><img src="https://opencollective.com/tsed/tiers/backer.svg?width=890"></a>
-
 
 ## Sponsors
 
