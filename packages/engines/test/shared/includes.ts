@@ -10,7 +10,7 @@ export function test(name: string) {
   const user = {name: "Tobi"};
 
   describe(name, () => {
-    it("should support includes", (done) => {
+    it("should support includes", async () => {
       const str = fs.readFileSync(`${rootDir}/fixtures/${name}/include.${name}`).toString();
       const viewsDir = `${rootDir}/fixtures/${name}`;
       const locals: any = {user: user, settings: {views: viewsDir}};
@@ -19,35 +19,22 @@ export function test(name: string) {
         locals.includeDir = viewsDir;
       }
 
-      engine.render(str, locals, (err: any, html: string) => {
-        if (err) return done(err);
-        try {
-          if (name === "liquid") {
-            expect(html).to.equal("<p>Tobi</p><section></section><footer></footer>");
-          } else {
-            expect(html).to.equal("<p>Tobi</p>");
-          }
-          return done();
-        } catch (e) {
-          return done(e);
-        }
-      });
+      const html = await engine.render(str, locals);
+
+      if (name === "liquid") {
+        expect(html).to.equal("<p>Tobi</p><section></section><footer></footer>");
+      } else {
+        expect(html).to.equal("<p>Tobi</p>");
+      }
     });
 
     if (name === "nunjucks") {
-      it("should support extending views", (done) => {
+      it("should support extending views", async () => {
         const str = fs.readFileSync(`${rootDir}/fixtures/${name}/layouts.${name}`).toString();
         const locals = {user: user, settings: {views: `${rootDir}/fixtures/${name}`}};
 
-        engine.render(str, locals, (err: unknown, html: string) => {
-          if (err) return done(err);
-          try {
-            expect(html).to.equal("<header></header><p>Tobi</p><footer></footer>");
-            return done();
-          } catch (e) {
-            return done(e);
-          }
-        });
+        const html = await engine.render(str, locals);
+        expect(html).to.equal("<header></header><p>Tobi</p><footer></footer>");
       });
     }
   });

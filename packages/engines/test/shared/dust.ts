@@ -3,14 +3,14 @@ import fs from "fs";
 import {expect} from "chai";
 import {join} from "path";
 
-const rootDir = join(__dirname, '..')
+const rootDir = join(__dirname, "..");
 
 export function test(name: string) {
   const user = {name: "Tobi"};
 
   describe(name, () => {
     // Use case: return upper case string.
-    it("should support fetching template name from the context", (done) => {
+    it("should support fetching template name from the context", async () => {
       const viewsDir = `${rootDir}/fixtures/${name}`;
       const templatePath = `${viewsDir}/user_template_name.${name}`;
       const str = fs.readFileSync(templatePath).toString();
@@ -27,14 +27,11 @@ export function test(name: string) {
           return chunk.write(context.getTemplateName());
         };
 
-        requires.dust = dust;
+        requires.set('dust', dust);
       }
 
-      engines.get(name)!.render(str, locals, (err: any, html: string) => {
-        if (err) return done(err);
-        expect(html).to.equal("<p>Tobi</p>user_template_name");
-        return done();
-      });
+      const html = await engines.get(name)!.render(str, locals);
+      expect(html).to.equal("<p>Tobi</p>user_template_name");
     });
   });
 }

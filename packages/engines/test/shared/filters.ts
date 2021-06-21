@@ -3,7 +3,7 @@ import fs from "fs";
 import {expect} from "chai";
 import {join} from "path";
 
-const rootDir = join(__dirname, '..')
+const rootDir = join(__dirname, "..");
 
 export function test(name: string) {
   const engine = engines.get(name)!;
@@ -11,7 +11,7 @@ export function test(name: string) {
 
   describe(name, () => {
     // Use case: return upper case string.
-    it("should support filters", (done) => {
+    it("should support filters", async () => {
       const str = fs.readFileSync(`${rootDir}/fixtures/${name}/filters.${name}`).toString();
 
       const locals = {
@@ -23,13 +23,8 @@ export function test(name: string) {
         }
       };
 
-      engine.render(str, locals, (err, html) => {
-        if (err) {
-          return done(err);
-        }
-        expect(html).to.equal("TOBI");
-        return done();
-      });
+      const html = await engine.render(str, locals);
+      expect(html).to.equal("TOBI");
     });
   });
 }

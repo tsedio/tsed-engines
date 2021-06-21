@@ -25,6 +25,15 @@
 
 <hr />
 
+> Template engine consolidation library (inspired by consolidate) written in TypeScript.
+
+## Feature
+
+- Support multiple engine library,
+- Extendable - You can register your own engine,
+- Configurable,
+- Agnostic from Express/Koa (but compatible with Express)
+
 ## Installation
 
 ```sh
@@ -33,9 +42,11 @@ npm install @tsed/engines
 
 ## Supported template engines
 
-Some package has the same key name, consolidate will load them according to the order number. By example for dust, consolidate will try to use in this order: `dust`, `dustjs-helpers` and `dustjs-linkedin`. If `dust` is installed, `dustjs-linkedin` will not be used by consolidate.
+Some package has the same key name, @tsed/engines will load them according to the order number. 
+For example with dust, @tsed/engines will try to use in this order: `dustjs-helpers` and `dustjs-linkedin`. 
+If `dustjs-helpers` is installed, `dustjs-linkedin` will not be used by consolidate.
 
-| Name `cons.*` | Package Name / Order | Website / State |
+| Name | Package Name / Order | Website / State |
 ---|---|---
 | [atpl](https://github.com/soywiz/atpl.js) | [`npm install atpl`](https://www.npmjs.com/package/atpl) | - |
 | [bracket](https://github.com/danlevan/bracket-template) | [`npm install bracket-template`](https://www.npmjs.com/package/bracket-template) | - |
@@ -51,7 +62,6 @@ Some package has the same key name, consolidate will load them according to the 
 | [htmling](https://github.com/codemix/htmling) | [`npm install htmling`](https://www.npmjs.com/package/htmling) | - |
 | [jazz](https://github.com/shinetech/jazz) | [`npm install jazz`](https://www.npmjs.com/package/jazz) | - |
 | [just](https://github.com/baryshev/just) | [`npm install just`](https://www.npmjs.com/package/just) | - |
-| [liquid](https://github.com/leizongmin/tinyliquid) | [`npm install tinyliquid`](https://www.npmjs.com/package/tinyliquid) | [(website)](http://liquidmarkup.org/)<br>**will never add any new features** |
 | [liquor](https://github.com/chjj/liquor) | [`npm install liquor`](https://www.npmjs.com/package/liquor) | - |
 | [lodash](https://github.com/bestiejs/lodash) | [`npm install lodash`](https://www.npmjs.com/package/lodash) | [(website)](http://lodash.com/) |
 | [marko](https://github.com/marko-js/marko) | [`npm install marko`](https://www.npmjs.com/package/marko) | [(website)](http://markojs.com) |
@@ -60,9 +70,7 @@ Some package has the same key name, consolidate will load them according to the 
 | [nunjucks](https://github.com/mozilla/nunjucks) | [`npm install nunjucks`](https://www.npmjs.com/package/nunjucks) | [(website)](https://mozilla.github.io/nunjucks) |
 | [plates](https://github.com/flatiron/plates) | [`npm install plates`](https://www.npmjs.com/package/plates) | - |
 | [pug](https://github.com/pugjs/pug) | [`npm install pug`](https://www.npmjs.com/package/pug) | [(website)](http://jade-lang.com/) / **(formerly jade)** |
-| [qejs](https://github.com/jepso/QEJS) | [`npm install qejs`](https://www.npmjs.com/package/qejs) | - |
 | [ractive](https://github.com/ractivejs/ractive) | [`npm install ractive`](https://www.npmjs.com/package/ractive) | - |
-| [razor](https://github.com/kinogam/kino.razor) | [`npm install razor`](https://www.npmjs.com/package/razor) | - |
 | [react](https://github.com/facebook/react) | [`npm install react`](https://www.npmjs.com/package/react) | - |
 | [slm](https://github.com/slm-lang/slm) | [`npm install slm`](https://www.npmjs.com/package/slm) | - |
 | [squirrelly](https://github.com/squirrellyjs/squirrelly) | [`npm install squirrelly`](https://www.npmjs.com/package/squirrelly) | [(website)](https://squirrelly.js.org) |
@@ -77,78 +85,53 @@ Some package has the same key name, consolidate will load them according to the 
 | [velocityjs](https://github.com/julianshapiro/velocity) | [BETA](https://www.npmjs.com/package/velocity-animate) | [(website)](http://velocityjs.org/) |
 | [walrus](https://github.com/jeremyruppel/walrus) | [`npm install walrus`](https://www.npmjs.com/package/walrus) | [(website)](http://documentup.com/jeremyruppel/walrus/) |
 | [whiskers](https://github.com/gsf/whiskers.js) | [`npm install whiskers`](https://www.npmjs.com/package/whiskers) | - |
-
+| [vue](https://github.com/vuejs/vue) | `npm install vue vue-pronto` | [(website)](https://vuejs.org/)
 > __NOTE__: you must still install the engines you wish to use, add them to your package.json dependencies.
 
 ## API
 
-All templates supported by this library may be rendered using the signature `(path[, locals], callback)` as shown below, which happens to be the signature that Express supports so any of these engines may be used within Express.
-
-> __NOTE__: All this example code uses cons.swig for the swig template engine. Replace swig with whatever templating you are using. For example, use cons.hogan for hogan.js, cons.jade for jade, etc. `console.log(cons)` for the full list of identifiers.
+You can get an engine by using `engines`:
 
 ```typescript
-import {swig} from '@tsed/engines';
+import {getEngine} from '@tsed/engines';
 
-swig('views/page.html', { user: 'tobi' }, (err, html) => {
-  if (err) throw err;
-  console.log(html);
-});
-```
-
-Or without options / local variables:
-
-```typescript
-import {swig} from '@tsed/engines';
-
-swig('views/page.html', (err, html) => {
-  if (err) throw err;
-  console.log(html);
-});
-```
-
-To dynamically pass the engine, simply use the subscript operator and a variable:
-
-```typescript
-import {engines} from '@tsed/engines';
-
-const engine = engines.get('swig');
-
-engine('views/page.html', { user: 'tobi' }, (err, html) => {
-  if (err) throw err;
-  console.log(html);
-});
-```
-
-### Promises
-
-Additionally, all templates optionally return a promise if no callback function is provided. The promise represents the eventual result of the template function which will either resolve to a string, compiled from the template, or be rejected. Promises expose a `then` method which registers callbacks to receive the promise’s eventual value and a `catch` method which the reason why the promise could not be fulfilled. Promises allow more synchronous-like code structure and solve issues like race conditions.
-
-```typescript
-import {swig} from '@tsed/engines';
-
-swig('views/page.html', { user: 'tobi' })
+getEngine('swig')
+  .renderFile({ user: 'tobi' })
   .then((html) => {
     console.log(html);
   })
-  .catch((err) => {
-    throw err;
-  });
+```
+
+Or render directly a template:
+
+```typescript
+import {getEngine} from '@tsed/engines';
+
+getEngine('ejs')
+  .render('<p><%= user.name %></p>')
+  .then((html) => {
+    console.log(html);
+  })
 ```
 
 ## Caching
 
-To enable caching simply pass `{ cache: true }`. Engines _may_ use this option to cache things reading the file contents, compiled `Function`s etc. Engines which do _not_ support this may simply ignore it. All engines that consolidate.js implements I/O for will cache the file contents, ideal for production environments.
-When using consolidate directly: `cons.swig('views/page.html', { user: 'tobi', cache:true }, callback);`
+To enable caching simply pass `{ cache: true }`. Engines _may_ use this option to cache things reading the file contents, compiled `Function`s etc. 
+Engines which do _not_ support this may simply ignore it. All engines that consolidate.js implements I/O for will cache the file contents, ideal for production environments.
+When using @tsed/engines directly: `getEngine('swig').renderFile('views/page.html', { user: 'tobi', cache: true });`
+
 Using supported Express versions: `app.locals.cache = true` or set NODE_ENV to 'production' and Express will do this for you.
 
 ## Express example
 
+`@tsed/engines` can be used with Express as following:
+
 ```typescript
 import express from 'express';
-import {swig} from 'consolidate';
+import {getEngine} from '@tsed/engines';
 
 // assign the swig engine to .html files
-app.engine('html', swig);
+app.engine('html', getEngine('swig'));
 
 // set .html as the default extension
 app.set('view engine', 'html');
@@ -176,9 +159,44 @@ app.listen(3000);
 console.log('Express server listening on port 3000');
 ```
 
+## Koa
+
+`@tsed/engines` can be used with Koa as following:
+
+```typescript
+import {getEngines} from "./getEngines";
+
+var views = require('koa-views');
+
+const render = views(__dirname + '/views', {
+  engineSource: getEngines(),
+  map: {
+    html: 'underscore'
+  }
+})
+
+// Must be used before any router is used
+app.use(render)
+// OR Expand by app.context
+// No order restrictions
+// app.context.render = render()
+
+app.use(async function (ctx) {
+  ctx.state = {
+    session: this.session,
+    title: 'app'
+  };
+
+  await ctx.render('user', {
+    user: 'John'
+  });
+});
+```
+
 ## Template Engine Instances
 
-Template engines are exposed via the `cons.requires` object, but they are not instantiated until you've called the `cons[engine].render()` method. You can instantiate them manually beforehand if you want to add filters, globals, mixins, or other engine features.
+Template engines are exposed via the `requires` object, but they are not instantiated until you've called the `getEngine(engine).render()` method. 
+You can instantiate them manually beforehand if you want to add filters, globals, mixins, or other engine features.
 
 ```typescript
 import {requires} from 'consolidate';
@@ -186,22 +204,62 @@ import nunjucks from 'nunjucks';
 
 // add nunjucks to requires so filters can be
 // added and the same instance will be used inside the render method
-requires.nunjucks = nunjucks.configure();
+requires.set('nunjucks', nunjucks.configure());
 
-requires.nunjucks.addFilter('foo', () => {
+requires.get('nunjucks').addFilter('foo', () => {
   return 'bar';
 });
 ```
 
+## Implement you own engine
+
+`@tsed/engines` let you register your own engine by using the `@ViewEngine` decorator. Here an is example of
+pug engine implementation:
+
+```typescript
+import {Engine, ViewEngine} from "@tsed/engines";
+
+@ViewEngine("pug", {
+  requires: ["pug", "then-pug"] // multiple require is possible. Ts.ED will use the first module resolved from node_modules
+})
+export class PugEngine extends Engine {
+  protected $compile(template: string, options: any) {
+    return this.engine.compile(template, options);
+  }
+
+  protected async $compileFile(file: string, options: any) {
+    return this.engine.compileFile(file, options);
+  }
+}
+```
+
+See more examples in `packages/engines/src/components` directory.
+
+## Override engine
+
+```typescript
+import {PugEngine} from "@tsed/engines";
+
+@ViewEngine("pug", {
+  requires: ["pug", "then-pug"] // multiple require is possible. Ts.ED will use the first module resolved from node_modules
+})
+export class CustomePugEngine extends PugEngine {
+  protected $compile(template: string, options: any) {
+    return super.$compile(template, options);
+  }
+
+  protected async $compileFile(file: string, options: any) {
+    return super.$compileFile(file, options);
+  }
+}
+```
+
 ## Notes
 
-* If you're using Nunjucks, please take a look at the `exports.nunjucks.render` function in `lib/index.js`. You can pass your own engine/environment via `options.nunjucksEnv`, or if you want to support Express you can pass `options.settings.views`, or if you have another use case, pass `options.nunjucks` (see the code for more insight).
+* If you're using Nunjucks, please take a look at the `exports.nunjucks.render` function in `packages/engines/src/components/NunjuncksEngine.ts`. You can pass your own engine/environment via `options.nunjucksEnv`, or if you want to support Express you can pass `options.settings.views`, or if you have another use case, pass `options.nunjucks` (see the code for more insight).
 * You can pass **partials** with `options.partials`
 * For using **template inheritance** with nunjucks, you can pass a loader
   with `options.loader`.
-* To use **filters** with tinyliquid, use `options.filters` and specify an array of properties, each of which is a named filter function. A filter function takes a string as a parameter and returns a modified version of it.
-* To use **custom tags** with tinyliquid, use `options.customTags` to specify an array of tag functions that follow the tinyliquid [custom tag](https://github.com/leizongmin/tinyliquid/wiki/Custom-Tag) definition.
-* The default directory used with the **include** tag with tinyliquid is the current working directory. To override this, use `options.includeDir`.
 * `React` To render content into a html base template (eg. `index.html` of your React app), pass the path of the template with `options.base`.
 
 ## Contributors

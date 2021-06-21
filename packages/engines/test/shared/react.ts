@@ -1,10 +1,10 @@
 import {engines} from "@tsed/engines";
-import { expect } from "chai";
+import {expect} from "chai";
 import fs from "fs";
 import sinon from "sinon";
 import {join} from "path";
 
-const rootDir = join(__dirname, '..')
+const rootDir = join(__dirname, "..");
 const sandbox = sinon.createSandbox();
 
 const readFile = fs.readFile;
@@ -23,52 +23,31 @@ export function test(name: string) {
       sandbox.restore();
     });
 
-    it("should support locals",  (done)=> {
+    it("should support locals", async () => {
       const path = `${rootDir}/fixtures/${name}/user.${name}`;
       const locals = {user: user};
-      engine(path, locals, function (err, html) {
+      const html = await engine.renderFile(path, locals);
 
-        if (err) {
-          return done(err);
-        }
-
-        expect(html).to.equal("<p>Tobi</p>");
-        done();
-      });
+      expect(html).to.equal("<p>Tobi</p>");
     });
 
     it("should support promises", async () => {
       const path = `${rootDir}/fixtures/${name}/user.${name}`;
       const locals = {user: user};
-      const html = await engine(path, locals);
+      const html = await engine.renderFile(path, locals);
 
       expect(html).to.equal("<p>Tobi</p>");
     });
 
-    it("should support rendering a string",  (done)=> {
-      const str = fs.readFileSync(`${rootDir}/fixtures/${name}/user.${name}`).toString();
-      const locals = {user: user};
-
-      engine.render(str, locals, function (err, html) {
-        if (err) {
-          return done(err);
-        }
-
-        expect(html).to.equal("<p>Tobi</p>");
-        done();
-      });
-    });
-
-    it("should support promises from a string", async () => {
+    it("should support rendering a string", async () => {
       const str = fs.readFileSync(`${rootDir}/fixtures/${name}/user.${name}`).toString();
       const locals = {user: user};
 
       const html = await engine.render(str, locals);
-
       expect(html).to.equal("<p>Tobi</p>");
     });
 
-    it("should support rendering into a base template", (done) => {
+    it("should support rendering into a base template", async () => {
       const path = `${rootDir}/fixtures/${name}/user.${name}`;
       const locals = {
         user: user,
@@ -76,14 +55,8 @@ export function test(name: string) {
         title: "My Title"
       };
 
-      engine(path, locals, (err, html) => {
-        if (err) {
-          return done(err);
-        }
-
-        expect(html).to.equal("<html><head><title>My Title</title></head><body><p>Tobi</p></body></html>");
-        done();
-      });
+      const html = await engine.renderFile(path, locals);
+      expect(html).to.equal("<html><head><title>My Title</title></head><body><p>Tobi</p></body></html>");
     });
   });
 }

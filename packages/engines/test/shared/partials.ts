@@ -13,51 +13,40 @@ export function test(name: string) {
   const engine = engines.get(name)!;
 
   describe(name, () => {
-    afterEach(function() {
+    afterEach(function () {
       fs.readFile = readFile;
       fs.readFileSync = readFileSync;
     });
 
     if (name === "dust") {
-      it("should support rendering a partial", (done) => {
+      it("should support rendering a partial", async () => {
         const str = fs.readFileSync(`${rootDir}/fixtures/${name}/user_partial.${name}`).toString();
         const locals = {
           user: user,
           views: `${rootDir}/fixtures/${name}`
         };
-        engine.render(str, locals, (err, html) => {
-          if (err) return done(err);
-          expect(html).to.equal("<p>Tobi from partial!</p><p>Tobi</p>");
-          done();
-        });
+        const html = await engine.render(str, locals);
+
+        expect(html).to.equal("<p>Tobi from partial!</p><p>Tobi</p>");
       });
     } else {
-      it("should support partials", function (done) {
+      it("should support partials", async () => {
         const path = `${rootDir}/fixtures/${name}/partials.${name}`;
         const locals = {user: user, partials: {partial: "user"}};
-        engine(path, locals, function (err, html) {
-          if (err) return done(err);
-          expect(html).to.equal("<p>Tobi</p>");
-          done();
-        });
+        const html = await engine.renderFile(path, locals);
+        expect(html).to.equal("<p>Tobi</p>");
       });
-      it("should support absolute path partial", function (done) {
+      it("should support absolute path partial", async () => {
         const path = `${rootDir}/fixtures/${name}/partials.${name}`;
         const locals = {user: user, partials: {partial: join(__dirname, "/../../test/fixtures/", name, "/user")}};
-        engine(path, locals, function (err, html) {
-          if (err) return done(err);
-          expect(html).to.equal("<p>Tobi</p>");
-          done();
-        });
+        const html = await engine.renderFile(path, locals);
+        expect(html).to.equal("<p>Tobi</p>");
       });
-      it("should support relative path partial", function (done) {
+      it("should support relative path partial", async () => {
         const path = `${rootDir}/fixtures/${name}/partials.${name}`;
         const locals = {user: user, partials: {partial: "../" + name + "/user"}};
-        engine(path, locals, function (err, html) {
-          if (err) return done(err);
-          expect(html).to.equal("<p>Tobi</p>");
-          done();
-        });
+        const html = await engine.renderFile(path, locals);
+        expect(html).to.equal("<p>Tobi</p>");
       });
     }
   });

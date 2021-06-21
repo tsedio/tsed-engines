@@ -9,6 +9,7 @@ module.exports = {
   recursive: true,
   reporter: "dot",
   spec: [
-    "packages/**/*.spec.ts"
+    "packages/*/src/**/*.spec.ts",
+    "packages/*/test/**/*.spec.ts",
   ]
 };

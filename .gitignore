@@ -55,12 +55,8 @@ tools/**/dist
 .vscode
 /reports
 
-/.nyc_output/
-/test/integration/app/spec/swagger.json
-/docs/.vuepress/dist
-/mongodb-binaries
-/packages/multipartfiles/test/.tmp/
-/packages/graphql/test/resources/schema.gql
-.db
-**/keys/jwks.json
-/packages/prisma/test/prisma/generated
+/packages/engines/.expressvue/test/fixtures/vue/user/app.js
+/packages/engines/.expressvue/test/fixtures/vue/user/client.bundle.js
+/packages/engines/.expressvue/test/fixtures/vue/user/entry-client.js
+/packages/engines/.expressvue/test/fixtures/vue/user/entry-server.js
+/packages/engines/.expressvue/test/fixtures/vue/user/server.bundle.js

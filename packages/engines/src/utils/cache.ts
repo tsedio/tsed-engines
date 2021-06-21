@@ -1,16 +1,24 @@
 import fs from "fs-extra";
 import {dirname, extname, isAbsolute, join} from "path";
-import {promisify} from "./promisify";
-import {Engine, EngineCallback} from "../interfaces";
+import {Engine} from "../components/Engine";
 
 const readCache: Map<string, string> = new Map();
 const cacheStore: Map<string, any> = new Map();
 
-export const engines: Map<string, Engine> = new Map();
-export const requires: Record<string, any> = {};
+export const engines: Map<string | typeof Engine, Engine> = new Map();
+export const requires: Map<string, any> = new Map();
+export const extend = require("util")._extend;
 
 export function requireEngine(name: string, toName: string = name) {
-  return requires[toName] || (requires[toName] = require(name));
+  if (!requires.has(toName)) {
+    setRequireEngine(name, toName);
+  }
+
+  return requires.get(toName);
+}
+
+export function setRequireEngine(name: string, toName: string = name) {
+  requires.set(toName, require(name));
 }
 
 export function setToCache(key: string, value: any) {
@@ -63,7 +71,6 @@ export function cache(options: any, compiled?: any) {
  *
  * @param path
  * @param {String} options
- * @param {Function} cb
  */
 export async function read(path: string, options: any): Promise<string> {
   let str = readCache.get(path);
@@ -137,34 +144,4 @@ export async function readPartials(path: string, options: any): Promise<Record<s
 
     next(0);
   });
-}
-
-function getExtend() {
-  return requires.extend || (requires.extend = require("util")._extend);
-}
-
-export function fromStringRenderer(name: string) {
-  return (path: string, options: any, cb: EngineCallback) => {
-    options.filename = path;
-
-    return promisify(cb, async (cb: EngineCallback) => {
-      try {
-        const partials = await readPartials(path, options);
-
-        const extend = getExtend();
-        const opts = extend({}, options);
-        opts.partials = partials;
-
-        if (cache(opts)) {
-          engines.get(name)!.render("", opts, cb);
-        } else {
-          const str = await read(path, opts);
-
-          engines.get(name)!.render(str, opts, cb);
-        }
-      } catch (err) {
-        cb(err);
-      }
-    });
-  };
 }
