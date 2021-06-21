@@ -17,7 +17,7 @@ export function test(name: string) {
   describe(name, () => {
     let user: any;
 
-    afterEach(function() {
+    afterEach(() => {
       fs.readFile = readFile;
       fs.readFileSync = readFileSync;
     });
@@ -26,7 +26,7 @@ export function test(name: string) {
       user = {name: "<strong>Tobi</strong>"};
 
       // Use case: return safe HTML that won’t be escaped in the final render.
-      it("should support helpers", function (done) {
+      it("should support helpers", async () => {
         const str = fs.readFileSync(`${rootDir}/fixtures/${name}/helpers.${name}`).toString();
 
         const locals = {
@@ -38,17 +38,14 @@ export function test(name: string) {
           }
         };
 
-        engine.render(str, locals, function (err, html) {
-          if (err) return done(err);
-          expect(html).to.equal("<strong>Tobi</strong>");
-          done();
-        });
+        const html = await engine.render(str, locals);
+        expect(html).to.equal("<strong>Tobi</strong>");
       });
     } else if (name === "squirrelly") {
       user = {name: "<strong>Tobi</strong>"};
 
       // Use case: return safe HTML that won’t be escaped in the final render.
-      it("should support helpers", function (done) {
+      it("should support helpers", async () => {
         const str = fs.readFileSync(`${rootDir}/fixtures/${name}/helpers.${name}`).toString();
 
         Sqrl.defineHelper("myhelper", (args: string[], content: any, blocks: any) => {
@@ -57,11 +54,8 @@ export function test(name: string) {
 
         const options = {user: user};
 
-        engine.render(str, options, (err, html) => {
-          if (err) return done(err);
-          expect(html).to.equal("strong>Tobi</strong");
-          done();
-        });
+        const html = await engine.render(str, options);
+        expect(html).to.equal("strong>Tobi</strong");
       });
     }
 
@@ -70,9 +64,8 @@ export function test(name: string) {
 
       // See this for Vash helper system : https://github.com/kirbysayshi/vash#helper-system
       // Use case: return as as lower case
-      it("should support helpers", function (done) {
+      it("should support helpers", async () => {
         const str = fs.readFileSync(`${rootDir}/fixtures/${name}/helpers.${name}`).toString();
-
         const locals = {
           user: user,
           helpers: {
@@ -82,11 +75,8 @@ export function test(name: string) {
           }
         };
 
-        engine.render(str, locals, (err, html) => {
-          if (err) return done(err);
-          expect(html).to.equal("<strong>tobi</strong>");
-          done();
-        });
+        const html = await engine.render(str, locals);
+        expect(html).to.equal("<strong>tobi</strong>");
       });
     }
   });

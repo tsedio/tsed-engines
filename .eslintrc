@@ -11,6 +11,7 @@
     "project": "./tsconfig.json"
   },
   "env": {
+    "mocha": true,
     "node": true,
     "es6": true
   },
@@ -36,5 +37,8 @@
       "**/lib/**/*.ts",
       "**/test/**/*.ts",
       "**/node_modules/**/*.ts"
-  ]
+  ],
+  "globals": {
+    "expect": "readonly"
+  }
 }
