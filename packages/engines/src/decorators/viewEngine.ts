@@ -1,10 +1,8 @@
-import {engines} from "../utils/cache";
 import {ViewEngineOptions} from "../components/Engine";
+import {engines} from "../registries/EnginesContainer";
 
 export function ViewEngine(name: string, options: ViewEngineOptions = {}): ClassDecorator {
   return (target: any) => {
-    const instance = new target(name, options);
-    engines.set(name, instance);
-    engines.set(target, instance);
+    engines.set(target, {name, useClass: target, options});
   };
 }

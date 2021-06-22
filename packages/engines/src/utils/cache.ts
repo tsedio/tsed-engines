@@ -5,7 +5,6 @@ import {Engine} from "../components/Engine";
 const readCache: Map<string, string> = new Map();
 const cacheStore: Map<string, any> = new Map();
 
-export const engines: Map<string | typeof Engine, Engine> = new Map();
 export const requires: Map<string, any> = new Map();
 export const extend = require("util")._extend;
 

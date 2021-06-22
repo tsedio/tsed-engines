@@ -4,7 +4,7 @@
 
 <div align="center">
 
-   <h1>Ts.ED Engines</h1>
+   <h1>Ts.ED EnginesContainer</h1>
 
 [![Build & Release](https://github.com/tsedio/tsed-engines/actions/workflows/build.yml/badge.svg)](https://github.com/tsedio/tsed-engines/actions/workflows/build.yml)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
@@ -16,7 +16,7 @@
 <div align="center">
   <a href="https://tsed.io/">Website</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://tsed.io/docs/engines.html">Engines</a>
+  <a href="https://tsed.io/docs/engines.html">EnginesContainer</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://api.tsed.io/rest/slack/tsedio/tsed">Slack</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
@@ -116,8 +116,8 @@ getEngine('ejs')
 
 ## Caching
 
-To enable caching simply pass `{ cache: true }`. Engines _may_ use this option to cache things reading the file contents, compiled `Function`s etc. 
-Engines which do _not_ support this may simply ignore it. All engines that consolidate.js implements I/O for will cache the file contents, ideal for production environments.
+To enable caching simply pass `{ cache: true }`. EnginesContainer _may_ use this option to cache things reading the file contents, compiled `Function`s etc. 
+EnginesContainer which do _not_ support this may simply ignore it. All engines that consolidate.js implements I/O for will cache the file contents, ideal for production environments.
 When using @tsed/engines directly: `getEngine('swig').renderFile('views/page.html', { user: 'tobi', cache: true });`
 
 Using supported Express versions: `app.locals.cache = true` or set NODE_ENV to 'production' and Express will do this for you.
@@ -144,7 +144,7 @@ users.push({ name: 'jane' });
 
 app.get('/', function(req, res){
   res.render('index', {
-    title: 'Ts.ED Engines'
+    title: 'Ts.ED EnginesContainer'
   });
 });
 
