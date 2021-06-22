@@ -1,4 +1,4 @@
-import {engines, extend} from "../utils/cache";
+import {extend} from "../utils/cache";
 import {ViewEngine} from "../decorators/viewEngine";
 import {Engine} from "./Engine";
 

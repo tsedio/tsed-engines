@@ -38,5 +38,6 @@ export * from "./components/WalrusEngine";
 export * from "./components/Engine";
 
 export * from "./decorators/viewEngine";
+export * from "./registries/EnginesContainer";
 export * from "./utils/cache";
 export * from "./utils/getEngines";

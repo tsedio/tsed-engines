@@ -1,5 +1,5 @@
-import {engines} from "./cache";
 import {EngineOptions} from "../components/Engine";
+import {engines} from "../registries/EnginesContainer";
 
 export type RenderCallback = (err: Error | null, str?: string | any) => any;
 export interface EngineFunction {
@@ -35,19 +35,17 @@ export function getEngine(name: string): EngineFunction {
 
   return cb as any;
 }
+
 let localEngines: any;
+
 export function getEngines(): Record<string, EngineFunction> {
   localEngines =
     localEngines ||
-    [...engines.keys()].reduce((acc, key) => {
-      if (typeof key === "string") {
-        return {
-          ...acc,
-          [key]: getEngine(key)
-        };
-      }
-
-      return acc;
+    engines.getSupportedEngines().reduce((acc, key) => {
+      return {
+        ...acc,
+        [key]: getEngine(key)
+      };
     }, {});
 
   return localEngines;
