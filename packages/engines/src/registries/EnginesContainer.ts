@@ -10,6 +10,10 @@ export interface EngineProvider {
 export class EnginesContainer {
   #providers: Map<string | typeof Engine, EngineProvider> = new Map();
 
+  has(key: string | typeof Engine) {
+    return this.#providers.has(key);
+  }
+
   get(key: string | typeof Engine) {
     const provider = this.#providers.get(key);
 
