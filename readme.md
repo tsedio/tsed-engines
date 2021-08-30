@@ -4,7 +4,7 @@
 
 <div align="center">
 
-   <h1>Ts.ED EnginesContainer</h1>
+   <h1>Ts.ED Engines</h1>
 
 [![Build & Release](https://github.com/tsedio/tsed-engines/actions/workflows/build.yml/badge.svg)](https://github.com/tsedio/tsed-engines/actions/workflows/build.yml)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
@@ -16,7 +16,7 @@
 <div align="center">
   <a href="https://tsed.io/">Website</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://tsed.io/docs/engines.html">EnginesContainer</a>
+  <a href="https://tsed.io/docs/engines.html">Engines</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://api.tsed.io/rest/slack/tsedio/tsed">Slack</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
@@ -27,7 +27,7 @@
 
 ## Packages
 
-- [EnginesContainer](/packages/engines/readme.md)
+- [Engines](/packages/engines/readme.md)
 
 ## Contributors
 Please read [contributing guidelines here](./CONTRIBUTING.md).

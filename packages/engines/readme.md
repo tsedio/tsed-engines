@@ -4,7 +4,7 @@
 
 <div align="center">
 
-   <h1>Ts.ED EnginesContainer</h1>
+   <h1>Ts.ED Engines</h1>
 
 [![Build & Release](https://github.com/tsedio/tsed-engines/actions/workflows/build.yml/badge.svg)](https://github.com/tsedio/tsed-engines/actions/workflows/build.yml)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
@@ -25,14 +25,14 @@
 
 <hr />
 
-> Template engine consolidation library (inspired by consolidate) written in TypeScript.
+> Template engine consolidation library (inspired from consolidate) written in TypeScript.
 
 ## Feature
 
 - Support multiple engine library,
 - Extendable - You can register your own engine,
 - Configurable,
-- Agnostic from Express/Koa (but compatible with Express)
+- Agnostic from Express/Koa (but compatible with Express).
 
 ## Installation
 

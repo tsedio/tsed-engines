@@ -1,7 +1,7 @@
 {
   "name": "@tsed/engines",
   "version": "1.1.4",
-  "description": "Generate Ts.ED JsonSchema based on Prisma models",
+  "description": "Template engines library. Provide an API to adding custom engines from decorators.",
   "source": "./src/index.ts",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
