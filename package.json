@@ -34,7 +34,7 @@
     "microbundle": "0.13.0"
   },
   "devDependencies": {
-    "@tsed/monorepo-utils": "1.18.2",
+    "@tsed/monorepo-utils": "1.19.1",
     "@types/mocha": "8.2.2",
     "@types/chai": "4.2.12",
     "@types/chai-as-promised": "7.1.3",
