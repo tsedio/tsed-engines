@@ -15208,9 +15208,9 @@ twig@^1.15.2:
     walk "2.3.x"
 
 twing@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/twing/-/twing-5.0.2.tgz#e795ea454416ab4127663478a25c053ce94ce5f2"
-  integrity sha512-uyOnD+KUTH+Ddbs21/KVJJI8DFhlDLNJLEU5UrudGS1W1qLyyCho9HxSus9LUzIjYRYNifXiQnlYwzi2aWI0Pg==
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/twing/-/twing-5.1.0.tgz#96870da22e03c9f4c2f88f2f45b5a36856a93cdf"
+  integrity sha512-pr/OnI0ozN+0ltZHcPWO6jlM1fpZ8mQcwF0FSTRzZy0a8Uy8N5hoUDBnO6TVS8AnsXgc4kCDsZo8sW6dIREUgQ==
   dependencies:
     "@types/luxon" "^1.4.0"
     camelcase "^4.1.0"
