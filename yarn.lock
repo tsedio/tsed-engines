@@ -15644,9 +15644,9 @@ vash@^0.13.0:
     uglify-js "^3.8.0"
 
 velocityjs@^2.0.1:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/velocityjs/-/velocityjs-2.0.3.tgz#cc772f687061997127b7d8a827dbef3af8a0bbe6"
-  integrity sha512-sUkygY7HwvbKZvS3naiI7t2o4RTqui6efSwTXLb03igdvPKm3SwCpnqA2kU4/jLD2f0eHB9xPoiza9XAkpuU+g==
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/velocityjs/-/velocityjs-2.0.4.tgz#47c3b10155d4a5e071886751784df9d0571cc6b6"
+  integrity sha512-lRIzRlSEaRmFUqchwCLG8KNsU2UZd8B/sQ4/sHcQlNmpc3rNP43Dlh0B1KPYfnv91shBLdEmxr84SbA9JEmR7A==
 
 vendors@^1.0.0:
   version "1.0.4"
